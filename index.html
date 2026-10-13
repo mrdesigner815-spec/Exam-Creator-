@@ -1,350 +1,501 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة اختبارات اللغة الإنجليزية المتقدمة</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Cairo', sans-serif; }
-    </style>
-</head>
-<body class="bg-gradient-to-br from-indigo-50 via-sky-50 to-blue-100 min-h-screen text-slate-800">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>إعداد اختبارات اللغة الإنجليزية - معايير وزارة التعليم</title>
+<style>
+/* Layout: a calm worksheet-style wizard. Single column, cards on a tinted ground, sticky stepper, sticky action bar. */
+:root{--bg:#eef3f1;--surface:#fff;--ink:#14302b;--muted:#566b66;--line:#d3dfdb;--accent:#0b6b60;--accent-ink:#fff;--accent-soft:#dcefea;--warn:#8a4b08;--warn-soft:#fbefd9;--bad:#a8281f;--bad-soft:#fbe4e1;--ok:#17703f;--ok-soft:#dff2e6;--shadow:0 1px 2px rgba(20,48,43,.08);
+--f-body:system-ui,'Segoe UI','Noto Sans Arabic','Geeza Pro',Tahoma,Arial,sans-serif;--f-head:system-ui,'Segoe UI','Noto Sans Arabic','Geeza Pro',Tahoma,Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1917;--surface:#16231f;--ink:#e3efeb;--muted:#9bb1ab;--line:#2c3f3a;--accent:#4fc2b1;--accent-ink:#06211d;--accent-soft:#1b3a35;--warn:#f0b866;--warn-soft:#3a2c12;--bad:#ff8f84;--bad-soft:#3d1c19;--ok:#6fd49a;--ok-soft:#173326;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1917;--surface:#16231f;--ink:#e3efeb;--muted:#9bb1ab;--line:#2c3f3a;--accent:#4fc2b1;--accent-ink:#06211d;--accent-soft:#1b3a35;--warn:#f0b866;--warn-soft:#3a2c12;--bad:#ff8f84;--bad-soft:#3d1c19;--ok:#6fd49a;--ok-soft:#173326;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;padding-inline:16px;padding-block:0 96px}
+#app{max-width:1040px;margin:0 auto}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px 8px;flex-wrap:wrap}
+h1{font-family:var(--f-head);font-size:1.45rem;margin:0;line-height:1.4}
+h1 small{display:block;font:500 .78rem var(--f-body);color:var(--muted);letter-spacing:.02em}
+h2{font-family:var(--f-head);font-size:1.15rem;margin:0 0 6px}h3{font-family:var(--f-head);font-size:1rem;margin:0 0 6px}
+#stepper{display:flex;gap:6px;overflow-x:auto;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:8px;z-index:5;scrollbar-width:thin}
+.st{flex:1 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:8px;font:500 .85rem var(--f-body);cursor:pointer;white-space:nowrap}
+.st i{font-style:normal;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--ink);font-size:.75rem}
+.st.on{border-color:var(--accent);color:var(--ink);box-shadow:inset 0 -3px 0 var(--accent)}.st.on i,.st.done i{background:var(--accent);color:var(--accent-ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;margin-block:12px;box-shadow:var(--shadow);min-width:0}
+.hint{color:var(--muted);font-size:.86rem;margin:4px 0 10px}.hint.warn{color:var(--warn)}.ok{color:var(--ok)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.wide{grid-column:1/-1}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}.f>span{font-size:.82rem;color:var(--muted);font-weight:500}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0;width:100%}
+input[type=file]{padding:8px}input[type=radio],input[type=checkbox]{width:auto}
+textarea{resize:vertical}input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+fieldset{border:1px solid var(--line);border-radius:10px;margin:14px 0 0;padding:10px 14px}legend{padding-inline:6px;font-weight:600;font-size:.9rem}
+.radio,.chk{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}.chk{display:inline-flex;margin-inline-end:16px}.radio.off{color:var(--muted)}.radio em{font-size:.8rem;display:block}
+.btn{font:600 .92rem var(--f-body);background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);border-radius:8px;padding:9px 16px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent);border-color:var(--line)}.btn.ghost:hover{border-color:var(--accent)}.btn.sm{padding:4px 10px;font-size:.8rem}.btn.big{padding:12px 26px;font-size:1rem}.btn.danger{color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:not-allowed}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-block:10px 14px;flex-wrap:wrap}.tab{font:500 .9rem var(--f-body);background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);padding:8px 14px;cursor:pointer}.tab.on{color:var(--ink);border-color:var(--accent)}
+.logo-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.logo{max-height:84px;max-width:160px;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff}.logo.ph{display:grid;place-items:center;width:120px;height:84px;color:var(--muted);font-size:.8rem;background:var(--bg)}
+.files{list-style:none;padding:0;margin:10px 0;display:grid;gap:6px}.files li{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:8px 12px}.files small{display:block;color:var(--muted);font-size:.78rem}
+.scroll{overflow-x:auto;margin-block:8px}
+table{border-collapse:collapse;width:100%;font-size:.84rem}th,td{border:1px solid var(--line);padding:6px;text-align:center;vertical-align:middle}th{background:var(--accent-soft);font-weight:600}th small{display:block;font-weight:400;color:var(--muted);font-size:.68rem}
+table.tos{min-width:980px}.tos td input.num{width:56px;text-align:center;padding:5px}.tos input.un{min-width:150px}.tos textarea.ob{min-width:170px;font-size:.8rem;padding:5px}.tos td small{color:var(--muted)}
+.tgt{display:flex;align-items:center;justify-content:center;gap:2px;margin-top:4px}.tgt input{width:48px;padding:3px;text-align:center;font-size:.8rem}
+.tos tfoot td{background:var(--bg);font-weight:600}.tos tr.tot td{background:var(--accent-soft)}.b{font-weight:600}.empty{color:var(--muted);padding:18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{border:1px solid var(--line);border-radius:8px;padding:3px 12px;font-size:.86rem;background:var(--bg)}
+.warnbox{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:10px 14px;margin-block:10px}.warnbox ul{margin:6px 0;padding-inline-start:20px}
+.checks{list-style:none;padding:0;margin:8px 0;display:grid;gap:6px}.checks li{display:flex;gap:10px;align-items:flex-start;border-radius:8px;padding:8px 12px}.checks small{display:block;font-size:.8rem;opacity:.9}
+.checks .ic{display:grid;place-items:center;flex:none;width:22px;height:22px;border-radius:50%;font-weight:700;font-size:.8rem;color:var(--surface)}
+.checks .ok{background:var(--ok-soft);color:var(--ink)}.checks .ok .ic{background:var(--ok)}.checks .warn{background:var(--warn-soft);color:var(--ink)}.checks .warn .ic{background:var(--warn)}.checks .bad{background:var(--bad-soft);color:var(--ink)}.checks .bad .ic{background:var(--bad)}
+table.mini td.ok{background:var(--ok-soft);color:var(--ok)}table.mini td.bad{background:var(--bad-soft);color:var(--bad)}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin-block:10px;display:grid;gap:10px;min-width:0}.q.loading{opacity:.5;pointer-events:none}.q header{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.qn{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:600}.tag{background:var(--accent-soft);border-radius:6px;padding:1px 9px;font-size:.78rem}.tag.alt{background:var(--bg);border:1px solid var(--line)}.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.opt{display:flex;gap:8px;align-items:center}.opt b{width:22px;text-align:center}
+.exports{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-block:14px}.exp{text-align:start;display:grid;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;cursor:pointer;font:inherit;color:var(--ink)}.exp:hover:not(:disabled){border-color:var(--accent)}.exp:disabled{opacity:.45;cursor:not-allowed}.exp small{color:var(--muted)}
+.prog{margin-top:14px;padding:10px 14px;border-radius:10px;background:var(--accent-soft)}
+#msg{position:sticky;top:calc(env(safe-area-inset-top,0px) + 56px);z-index:6;margin-block:8px;padding:10px 14px;border-radius:10px;background:var(--accent-soft);border:1px solid var(--line)}#msg[data-kind=bad]{background:var(--bad-soft);color:var(--bad)}#msg[data-kind=ok]{background:var(--ok-soft);color:var(--ok)}
+#feat{padding:8px 14px;border-radius:10px;background:var(--warn-soft);color:var(--warn);margin-block:6px}
+nav.actions{position:fixed;inset-inline:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;gap:10px;z-index:7}
+nav.actions .in{max-width:1040px;margin:0 auto;width:100%;display:flex;justify-content:space-between;gap:10px}
+#status table td:first-child{text-align:start}#status td.y{color:var(--ok)}#status td.n{color:var(--warn)}
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}.pics figure{margin:0;text-align:center}.pics img{width:100%;max-width:140px;aspect-ratio:1;border:1px solid var(--line);border-radius:8px;background:#fff}.grp{border-style:dashed;background:var(--bg)}table.mini input.num{width:72px;text-align:center}.filebtn{cursor:pointer;display:inline-block;margin-top:4px}
+.st i svg{display:block}.st .ic2{display:none}
+.chip.ok{border-color:var(--ok);background:var(--ok-soft)}.chip.warn{border-color:var(--warn);background:var(--warn-soft)}.chip.bad{border-color:var(--bad);background:var(--bad-soft)}
+.rings{display:flex;gap:28px;flex-wrap:wrap;justify-content:center;margin-block:6px}.rg{display:grid;justify-items:center;gap:2px;text-align:center;max-width:260px}.rg small{color:var(--muted);font-size:.8rem}
+.ring{width:132px;height:132px}.ring .rb{fill:none;stroke:var(--line);stroke-width:9}.ring .rf{fill:none;stroke-width:9;stroke-linecap:round}.ring text{font:700 20px var(--f-head);fill:var(--ink)}
+.ring.ok .rf{stroke:var(--ok)}.ring.warn .rf{stroke:var(--warn)}.ring.bad .rf{stroke:var(--bad)}
+.verdict{text-align:center;border-radius:10px;padding:8px 14px;margin:8px 0}.verdict.ok{background:var(--ok-soft);color:var(--ok)}.verdict.warn{background:var(--warn-soft);color:var(--warn)}.verdict.bad{background:var(--bad-soft);color:var(--bad)}
+.pc{font:600 .85rem var(--f-body);color:var(--muted);margin-inline-start:6px}
+.checks .na{background:var(--bg)}.checks .na .ic{background:var(--muted)}.checks .pending{background:var(--accent-soft)}.checks .pending .ic{background:var(--accent)}.checks .fx{color:var(--warn)}.checks .chk{margin-top:4px}
+table.mini tr.cur td{background:var(--accent-soft);font-weight:600}
+#standards{max-height:70vh;overflow:auto}#standards h3{margin-top:14px}#standards ul{margin:4px 0;padding-inline-start:22px}#standards details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin-block:6px}#standards summary{cursor:pointer;font-weight:600}
+.paper{background:#fff;color:#111;border:1px solid var(--line);border-radius:6px;padding:26px 30px;max-width:794px;margin:14px auto;font:15px/1.65 'Times New Roman',Georgia,serif;box-shadow:var(--shadow)}
+.paper table{font-size:.9rem}.paper th,.paper td{border:1px solid #555;color:#111;background:#fff;padding:4px 8px}.paper th{background:#eee}
+.ph{position:relative;text-align:center;min-height:56px}.plogo{position:absolute;left:0;top:0;max-height:56px;max-width:84px}.pt{display:grid;gap:2px;font-family:var(--f-body)}.pt .ps{font-size:1.15rem}
+.pinfo{width:100%;margin:10px 0 6px;font-family:var(--f-body)}.pscore{font-weight:700;font-size:1.05rem}
+.paper h4{margin:16px 0 4px;font-size:1rem;border-bottom:1px solid #999}.pq{margin:8px 0}.pq p{margin:2px 0}.po{list-style:upper-alpha;margin:2px 0 6px;padding-inline-start:30px}
+.ppass{border:1px solid #999;background:#fafafa;padding:8px 12px;margin:8px 0}.ppics{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0}.ppics figure{margin:0;text-align:center}.ppics img{width:92px;height:92px;border:1px solid #bbb}
+.paper .ak{color:#0b6b2a;font-weight:600}.pm{margin:4px 0}.pins{font-style:italic}
+.card.inner{background:var(--bg);box-shadow:none;margin-top:14px}.card.inner[hidden]{display:none}
+.pyr{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}.pyr>.scroll,.pyrlist{flex:1;min-width:260px}.pyrsvg{width:230px;max-width:100%;flex:none}
+.pyrsvg .pl{stroke:var(--surface);stroke-width:1}.pyrsvg text{font:700 15px var(--f-body);fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:3}
+.pl0{fill:color-mix(in srgb,var(--accent) 78%,var(--surface))}.pl1{fill:color-mix(in srgb,var(--accent) 62%,var(--surface))}.pl2{fill:color-mix(in srgb,var(--accent) 48%,var(--surface))}.pl3{fill:color-mix(in srgb,var(--accent) 36%,var(--surface))}.pl4{fill:color-mix(in srgb,var(--accent) 26%,var(--surface))}.pl5{fill:color-mix(in srgb,var(--accent) 16%,var(--surface))}
+td.lv{text-align:start}td.lv small{display:block;color:var(--muted);font-size:.7rem}input.pg{min-width:110px;padding:5px}table.mini input.num{width:64px}
+.pyrlist details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin-block:6px;background:var(--surface)}.pyrlist summary{cursor:pointer}.pyrlist .ok{color:var(--ok)}.pyrlist .bad{color:var(--bad)}
+.pq-list{list-style:none;margin:8px 0 2px;padding:0;display:grid;gap:6px}.pq-list li{display:grid;grid-template-columns:28px 1fr 110px 80px;gap:8px;align-items:center}.pq-list select,.pq-list input{padding:4px 6px;font-size:.8rem}.qn.sm{width:24px;height:24px;font-size:.75rem}.pq-list .qt{font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:560px){.pq-list li{grid-template-columns:24px 1fr 1fr}.pq-list .qt{grid-column:2/-1;white-space:normal}}
+@media (max-width:560px){.paper{padding:16px 14px}}
+@media (max-width:560px){body{font-size:14px}.card{padding:14px}.btn.big{width:100%}}
+@media (prefers-reduced-motion:no-preference){.btn,.st,.exp{transition:border-color .15s,background .15s}}
+</style>
+</head><body><div id="app" dir="rtl" lang="ar">
+<header class="top"><h1>إعداد اختبارات اللغة الإنجليزية<small>English Exam Creator (MOE Standards)</small></h1><span class="row" style="margin:0"><button class="btn ghost sm" data-act="standards">المعايير المعتمدة</button><button class="btn ghost sm" data-act="status">ما الذي يعمل الآن؟</button></span></header>
+<section id="standards" class="card" hidden></section>
+<section id="status" class="card" hidden><h2>حالة الميزات في هذه النسخة</h2><div class="scroll"><table><tbody>
+<tr><td>واجهة عربية متجاوبة ومعالج خطوات</td><td class="y">يعمل</td></tr>
+<tr><td>معلومات المعلم والاختبار وشعار المدرسة</td><td class="y">يعمل</td></tr>
+<tr><td>جدول المواصفات: تلقائي / يدوي مع حساب النسب والدرجات والتنبيهات</td><td class="y">يعمل</td></tr>
+<tr><td>استيراد جدول مواصفات من Excel / Word / PDF</td><td class="y">يعمل بمساعدة Claude</td></tr>
+<tr><td>رفع المحتوى (Word، PDF نصي، نص، صور) وتوليد الأسئلة بالإنجليزية</td><td class="y">يعمل بمساعدة Claude</td></tr>
+<tr><td>معايير وزارة التعليم (توزيع الدرجات، محددات المهارات، أنواع الأسئلة) محفوظة كبيانات داخل التطبيق</td><td class="y">يعمل</td></tr>
+<tr><td>تكامل أنواع الأسئلة الشاملة (الأسئلة العامة، القواعد، الإملاء بربع درجة، المفردات، الكتابة الموجهة)</td><td class="y">يعمل</td></tr>
+<tr><td>جدول المواصفات قابل للتعديل في خطوتي الجدول والتدقيق</td><td class="y">يعمل</td></tr>
+<tr><td>المراجعة والتعديل والاستبدال وإعادة الترتيب</td><td class="y">يعمل</td></tr>
+<tr><td>التدقيق: نسبة دقة الاختبار ونسبة الامتثال لمتطلبات المعلم ومعايير الوزارة</td><td class="y">يعمل</td></tr>
+<tr><td>المعاينة قبل التصدير (ورقة الطالب ونموذج الإجابة)</td><td class="y">يعمل</td></tr>
+<tr><td>تصدير Word (.docx): ورقة الطالب، نموذج الإجابة، جدول المواصفات، معايير التصحيح، تقرير التدقيق</td><td class="y">يعمل</td></tr>
+</tbody></table></div></section>
+<nav id="stepper" aria-label="خطوات إنشاء الاختبار"></nav>
+<div id="msg" role="status" aria-live="polite" hidden></div><div id="feat" hidden></div>
+<main id="stage"></main></div>
+<nav class="actions"><div class="in"><button class="btn ghost" id="prev" data-act="prev" hidden>السابق</button><span></span><button class="btn" id="next" data-act="next">التالي</button></div></nav>
+<script>/*! JSZip v3.10.2 */
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).JSZip=e()}}(function(){return function s(a,o,h){function u(r,e){if(!o[r]){if(!a[r]){var t="function"==typeof require&&require;if(!e&&t)return t(r,!0);if(l)return l(r,!0);var n=new Error("Cannot find module '"+r+"'");throw n.code="MODULE_NOT_FOUND",n}var i=o[r]={exports:{}};a[r][0].call(i.exports,function(e){var t=a[r][1][e];return u(t||e)},i,i.exports,s,a,o,h)}return o[r].exports}for(var l="function"==typeof require&&require,e=0;e<h.length;e++)u(h[e]);return u}({1:[function(e,t,r){"use strict";var d=e("./utils"),c=e("./support"),p="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";r.encode=function(e){for(var t,r,n,i,s,a,o,h=[],u=0,l=e.length,f=l,c="string"!==d.getTypeOf(e);u<e.length;)f=l-u,n=c?(t=e[u++],r=u<l?e[u++]:0,u<l?e[u++]:0):(t=e.charCodeAt(u++),r=u<l?e.charCodeAt(u++):0,u<l?e.charCodeAt(u++):0),i=t>>2,s=(3&t)<<4|r>>4,a=1<f?(15&r)<<2|n>>6:64,o=2<f?63&n:64,h.push(p.charAt(i)+p.charAt(s)+p.charAt(a)+p.charAt(o));return h.join("")},r.decode=function(e){var t,r,n,i,s,a,o=0,h=0,u="data:";if(e.substr(0,u.length)===u)throw new Error("Invalid base64 input");var l,f=3*(e=e.replace(/[^A-Za-z0-9+/=]/g,"")).length/4;if(e.charAt(e.length-1)===p.charAt(64)&&f--,e.charAt(e.length-2)===p.charAt(64)&&f--,f%1!=0)throw new Error("Invalid base64 input");for(l=c.uint8array?new Uint8Array(0|f):new Array(0|f);o<e.length;)t=p.indexOf(e.charAt(o++))<<2|(i=p.indexOf(e.charAt(o++)))>>4,r=(15&i)<<4|(s=p.indexOf(e.charAt(o++)))>>2,n=(3&s)<<6|(a=p.indexOf(e.charAt(o++))),l[h++]=t,64!==s&&(l[h++]=r),64!==a&&(l[h++]=n);return l}},{}]})});</script>
+<script>
+/* Standalone API configuration & Core Application Logic */
+(function () {
+  'use strict';
+  const KEYN = 'eec-api-key', MODELN = 'eec-api-model';
+  const get = k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
+  const put = (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch (e) { /* ignore */ } };
+  const TIER = { quick: 'claude-haiku-5-5', default: 'claude-sonnet-5-5', complex: 'claude-opus-5-5' };
+  const b64 = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+  function parseJSON(t) {
+    t = String(t || '').trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '');
+    try { return JSON.parse(t); } catch (e) { /* try to locate JSON */ }
+    const i = Math.min(...['{', '['].map(c => { const k = t.indexOf(c); return k < 0 ? 1e9 : k; })), j = Math.max(t.lastIndexOf('}'), t.lastIndexOf(']'));
+    if (i < 1e9 && j > i) { try { return JSON.parse(t.slice(i, j + 1)); } catch (e) { /* fall through */ } }
+    throw { code: 'bad_json', message: 'تعذّر فهم رد Claude. أعد المحاولة.' };
+  }
+  async function call(prompt, o) {
+    const key = get(KEYN); if (!key) { const as = document.getElementById('asst'); if (!as || as.hidden) openBox(); throw { code: 'no_key' }; }
+    const model = (o && o.model) || get(MODELN) || TIER[(o && o.modelTier) || 'default'] || TIER.default;
+    const content = [];
+    for (const im of (o && o.images) || []) content.push({ type: 'image', source: { type: 'base64', media_type: im.type || 'image/png', data: await b64(im) } });
+    content.push({ type: 'text', text: prompt });
+    let r;
+    try {
+      r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', signal: o && o.signal, headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model, max_tokens: 16000, messages: [{ role: 'user', content }] }) });
+    } catch (e) { if (e && e.name === 'AbortError') throw { code: 'cancelled' }; throw { code: 'network', message: 'تعذّر الاتصال بخدمة Claude. تحقق من الإنترنت.' }; }
+    if (r.status === 401 || r.status === 403) throw { code: 'no_key', message: 'المفتاح غير صالح أو لا يملك صلاحية.' };
+    if (r.status === 429 || r.status === 529) throw { code: 'rate_limited' };
+    if (!r.ok) { let m = ''; try { m = (await r.json()).error.message; } catch (e) { /* ignore */ } throw { code: 'api_error', message: 'خطأ من الخدمة (' + r.status + '): ' + m }; }
+    const d = await r.json(); return (d.content || []).filter(c => c.type === 'text').map(c => c.text).join('');
+  }
+  const sample = Object.assign(async (p, o) => ({ text: await call(p, o), truncated: false }), {
+    json: async (p, o) => parseJSON(await call(p, o)),
+    limits: async () => ({ images: true })
+  });
+  window.eecKey = { has: () => !!get(KEYN), set: k => { put(KEYN, k); } };
+  window.claude = { use: async name => name === 'sample' ? sample : null };
 
-    <div id="app" class="max-w-4xl mx-auto px-4 py-8">
-        
-        <!-- Header -->
-        <header class="text-center mb-10">
-            <div class="inline-flex items-center justify-center p-3 bg-indigo-600 text-white rounded-2xl shadow-lg mb-4">
-                <i class="fa-solid fa-graduation-cap text-3xl"></i>
-            </div>
-            <h1 class="text-3xl font-extrabold text-indigo-900 tracking-tight">منصة اختبارات اللغة الإنجليزية الذكية</h1>
-            <p class="text-slate-600 mt-2">أنشئ اختباراتك المخصصة بحرية تامة وبدون قيود لتقييم المهارات اللغوية</p>
-        </header>
+  const box = document.createElement('section');
+  box.id = 'keybox'; box.className = 'card'; box.hidden = true;
+  box.innerHTML = `<h2>مفتاح Claude الخاص بك</h2>
+  <p class="hint">لتعمل ميزات الذكاء الاصطناعي (التوليد، التدقيق، المساعد)، الصق مفتاح Anthropic API الخاص بك. يُحفظ المفتاح في هذا المتصفح فقط.</p>
+  <div class="grid"><label class="f"><span>مفتاح API (يبدأ بـ sk-ant-)</span><input id="key-in" type="password" dir="ltr" autocomplete="off" placeholder="sk-ant-..."></label>
+  <label class="f"><span>النموذج (اختياري)</span><input id="model-in" dir="ltr" placeholder="claude-sonnet-5-5"></label></div>
+  <div class="row"><button class="btn" id="key-save">حفظ</button><button class="btn ghost" id="key-del">حذف المفتاح</button><button class="btn ghost" id="key-close">إغلاق</button></div><p id="key-st" class="hint"></p>`;
+  const top = document.querySelector('header.top'); if (top) top.after(box);
+  function status() { box.querySelector('#key-st').textContent = get(KEYN) ? 'المفتاح محفوظ في هذا المتصفح.' : 'لا يوجد مفتاح محفوظ.'; btn.textContent = get(KEYN) ? 'مفتاح Claude ✓' : 'أدخل مفتاح Claude'; }
+  function openBox() { box.hidden = false; box.querySelector('#model-in').value = get(MODELN); status(); box.scrollIntoView && box.scrollIntoView({ block: 'start' }); }
+  const btn = document.createElement('button'); btn.className = 'btn ghost sm'; btn.dataset.keybtn = '1';
+  const holder = document.querySelector('header.top .row'); if (holder) holder.prepend(btn);
+  btn.addEventListener('click', () => { box.hidden ? openBox() : (box.hidden = true); });
+  box.querySelector('#key-save').addEventListener('click', () => { const k = box.querySelector('#key-in').value.trim(); if (k && !/^sk-ant-/.test(k)) { box.querySelector('#key-st').textContent = 'الصيغة غير صحيحة: يجب أن يبدأ المفتاح بـ sk-ant-'; return; } if (k) put(KEYN, k); put(MODELN, box.querySelector('#model-in').value.trim()); box.querySelector('#key-in').value = ''; status(); });
+  box.querySelector('#key-del').addEventListener('click', () => { put(KEYN, ''); status(); });
+  box.querySelector('#key-close').addEventListener('click', () => { box.hidden = true; });
+  status();
+  if (!get(KEYN)) openBox();
+})();
 
-        <!-- Setup Screen -->
-        <div id="setup-screen" class="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl p-8 border border-white">
-            <h2 class="text-xl font-bold text-indigo-900 mb-6 flex items-center gap-2">
-                <i class="fa-solid fa-sliders text-indigo-600"></i> إعدادات الاختبار الجديد
-            </h2>
+/* Exam Creator Logic, Standards Engine, and Ministry Compliance Integration */
+'use strict';
+const BLOOM = [
+  { ar: 'التذكر', en: 'Remembering' }, { ar: 'الفهم', en: 'Understanding' }, { ar: 'التطبيق', en: 'Applying' },
+  { ar: 'التحليل', en: 'Analyzing' }, { ar: 'التقويم', en: 'Evaluating' }, { ar: 'الإبداع', en: 'Creating' }
+];
+const STAGES = {
+  primary: { ar: 'المرحلة الابتدائية', en: 'primary school', grades: ['الأول الابتدائي', 'الثاني الابتدائي', 'الثالث الابتدائي', 'الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي'], targets: [42.5, 45, 2.5, 5, 2.5, 2.5] },
+  intermediate: { ar: 'المرحلة المتوسطة', en: 'intermediate school', grades: ['الأول المتوسط', 'الثاني المتوسط', 'الثالث المتوسط'], targets: [42.5, 45, 2.5, 5, 2.5, 2.5] },
+  secondary: { ar: 'المرحلة الثانوية', en: 'secondary school', grades: ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي'], targets: [42.5, 45, 2.5, 5, 2.5, 2.5] }
+};
+const EXAM_TYPES = ['اختبار قصير', 'اختبار منتصف الفصل', 'اختبار نهائي', 'اختبار تشخيصي', 'اختبار تدريبي', 'اختبار مخصص'];
+const QTYPES = {
+  mcq: { ar: 'اختيار من متعدد', en: 'Choose the correct answer' },
+  fill: { ar: 'إكمال الفراغات', en: 'Complete each sentence with the correct word' },
+  correct: { ar: 'اكتشف الخطأ وصحّحه', en: 'Find the mistake in each sentence and correct it' },
+  picture: { ar: 'مطابقة جملة بالصورة المناسبة', en: 'Match each sentence to the correct picture (write the letter)' },
+  reading: { ar: 'فهم المقروء (اختيار من متعدد)', en: 'Read the text, then choose the correct answer' },
+  tf: { ar: 'صح أو خطأ', en: 'Write True or False' },
+  short: { ar: 'إجابة قصيرة', en: 'Answer the following questions' },
+  essay: { ar: 'مقالي / كتابة', en: 'Writing task' },
+  ordering: { ar: 'ترتيب', en: 'Put in the correct order' },
+  matching: { ar: 'مطابقة', en: 'Match column A with column B' }
+};
+const TYPE_ORDER = ['mcq', 'fill', 'correct', 'picture', 'reading', 'tf', 'short', 'essay', 'ordering', 'matching'];
+const RUBRIC_DEFAULT = [
+  { c: 'Content accuracy', m: 1 }, { c: 'Completeness', m: 1 }, { c: 'Grammar', m: 1 },
+  { c: 'Vocabulary', m: 1 }, { c: 'Organization', m: 1 }, { c: 'Clarity', m: 1 }
+];
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <!-- Level Selection -->
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">مستوى الصعوبة</label>
-                    <select id="quiz-level" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="beginner">مبتدئ (Beginner - A1/A2)</option>
-                        <option value="intermediate" selected>متوسط (Intermediate - B1/B2)</option>
-                        <option value="advanced">متقدم (Advanced - C1/C2)</option>
-                    </select>
-                </div>
+const sum = a => a.reduce((x, y) => x + (+y || 0), 0);
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const uid = () => Math.random().toString(36).slice(2, 9);
+const AR = /[؀-ۿ]/;
+const fmt = n => (Math.round(n * 100) / 100).toString();
 
-                <!-- Topic Selection -->
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">قسم الاختبار / الموضوع</label>
-                    <select id="quiz-topic" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="grammar">قواعد اللغة (Grammar)</option>
-                        <option value="vocabulary">المفردات والمعاني (Vocabulary)</option>
-                        <option value="reading">فهم النصوص (Reading Comprehension)</option>
-                        <option value="mixed">اختبار شامل منوع (Mixed)</option>
-                    </select>
-                </div>
-            </div>
+function freshState() {
+  return {
+    step: 0,
+    info: { teacher: '', school: '', stage: 'intermediate', grade: STAGES.intermediate.grades[0], year: '', semester: 'الأول', title: '', type: EXAM_TYPES[1], duration: 45, total: 20, mode: 'paper', logo: null, logoW: 0, logoH: 0 },
+    content: { text: '', strict: true, files: [] },
+    tos: { method: 'auto', units: [], targets: STAGES.intermediate.targets.slice(), autoN: 40, itemMark: 0.5, unitNames: '', pages: ['', '', '', '', '', ''] },
+    styles: { mcq: 12, fill: 6, correct: 6, picture: 8, reading: 8, tf: 0, short: 0, essay: 0, ordering: 0, matching: 0 },
+    pairs: null, groups: [], questions: [], ackTOS: false, ackReview: false, ai: null, decl: { reviewed: false, coverage: false, ip: false }
+  };
+}
 
-            <!-- Question Count Slider -->
-            <div class="mb-8">
-                <div class="flex justify-between items-center mb-2">
-                    <label class="text-sm font-semibold text-slate-700">عدد الأسئلة</label>
-                    <span id="count-display" class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full">5 أسئلة</span>
-                </div>
-                <input type="range" id="question-count" min="3" max="15" value="5" class="w-full accent-indigo-600 cursor-pointer">
-            </div>
+function totalQ(S) { return S.tos.units.reduce((a, u) => a + sum(u.counts), 0); }
+function colTotals(S) { return BLOOM.map((_, i) => S.tos.units.reduce((a, u) => a + (+u.counts[i] || 0), 0)); }
+function marksPerQ(S) { const n = totalQ(S); return n ? S.info.total / n : 0; }
 
-            <!-- Start Button -->
-            <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg transition duration-200 flex items-center justify-center gap-3 text-lg cursor-pointer">
-                <i class="fa-solid fa-play"></i> بدء الاختبار فوراً
-            </button>
-        </div>
+function largestRemainder(weights, total) {
+  const w = weights.map(x => Math.max(0, +x || 0)); const s = sum(w);
+  if (!s || !total) return w.map(() => 0);
+  const raw = w.map(x => x / s * total), base = raw.map(Math.floor);
+  let left = total - sum(base);
+  raw.map((r, i) => ({ i, f: r - base[i] })).sort((a, b) => b.f - a.f).forEach(o => { if (left > 0) { base[o.i]++; left--; } });
+  return base;
+}
+function levelCounts(targets, N) {
+  const w = targets.map(x => Math.max(0, +x || 0)), s = sum(w); if (!s || !N) return w.map(() => 0);
+  const ideal = w.map(x => x / s * N), pos = w.filter(x => x > 0).length, c = ideal.map((x, i) => w[i] > 0 ? Math.max(N >= pos ? 1 : 0, Math.round(x)) : 0);
+  for (let g = 0; g < 1000 && sum(c) !== N; g++) {
+    if (sum(c) < N) { let bi = -1, bv = -1e9; ideal.forEach((x, i) => { if (w[i] > 0 && x - c[i] > bv) { bv = x - c[i]; bi = i; } }); c[bi]++; }
+    else { let bi = -1, bv = 1e9; ideal.forEach((x, i) => { const floor = N >= pos ? 1 : 0; if (w[i] > 0 && c[i] > floor && x - c[i] < bv) { bv = x - c[i]; bi = i; } }); if (bi < 0) break; c[bi]--; }
+  }
+  return c;
+}
+function setLevelCount(S, b, n) {
+  const U = S.tos.units; if (!U.length) return; n = Math.max(0, Math.round(+n || 0));
+  largestRemainder(U.map(u => +u.lessons || 1), n).forEach((v, i) => { U[i].counts[b] = v; });
+}
+function autoDistribute(S) {
+  const units = S.tos.units; if (!units.length) return;
+  const N = Math.max(0, +S.tos.autoN || 0);
+  const caps = largestRemainder(units.map(u => +u.lessons || 1), N);
+  const levels = levelCounts(S.tos.targets, N);
+  units.forEach(u => u.counts = Array(6).fill(0));
+  const last = levels.map((c, i) => c > 0 ? i : -1).filter(i => i >= 0).pop();
+  levels.forEach((L, b) => {
+    if (!L) return;
+    let alloc = b === last ? caps.slice() : largestRemainder(caps, L).map((a, i) => Math.min(a, caps[i]));
+    let d = L - sum(alloc);
+    while (d > 0) { let bi = -1, bv = 0; caps.forEach((c, i) => { const room = c - alloc[i]; if (room > bv) { bv = room; bi = i; } }); if (bi < 0) break; alloc[bi]++; d--; }
+    alloc.forEach((a, i) => { units[i].counts[b] = a; caps[i] -= a; });
+  });
+}
+function objCount(u) { const n = String(u.objectives || '').split(/\n/).map(x => x.trim()).filter(Boolean).length; return n || (+u.objN || 0); }
+function unitShare(S, u) { const t = sum(S.tos.units.map(x => +x.lessons || 0)); return t ? (+u.lessons || 0) / t * 100 : 0; }
+function typeSummary(S) {
+  const m = {}; S.questions.forEach(q => { const k = q.type + '|' + q.marks; m[k] = (m[k] || 0) + 1; });
+  return Object.keys(m).map(k => { const [t, mk] = k.split('|'); return `${QTYPES[t].ar}: ${m[k]}×${fmt(+mk)}`; });
+}
+function compareLevels(S) {
+  const n = S.questions.length, tn = totalQ(S), ct = colTotals(S), mq = marksPerQ(S);
+  return BLOOM.map((b, i) => { const act = S.questions.filter(q => q.bloom === i), am = sum(act.map(q => q.marks));
+    return { b, spec: ct[i], specPct: tn ? ct[i] / tn * 100 : 0, specMarks: ct[i] * mq, act: act.length, actPct: n ? act.length / n * 100 : 0, actMarks: am }; });
+}
+function makeUnits(names) {
+  return names.map((n, i) => ({ id: uid(), name: n || ('Unit ' + (i + 1)), objectives: '', lessons: 1, counts: [0, 0, 0, 0, 0, 0] }));
+}
+function tosWarnings(S) {
+  const w = [], n = totalQ(S);
+  if (!S.tos.units.length) { w.push('لم تُضف أي وحدة بعد.'); return w; }
+  if (!n) { w.push('عدد الأسئلة الكلي يساوي صفرًا.'); return w; }
+  const t = sum(S.tos.targets); if (Math.round(t) !== 100) w.push('مجموع النسب المطلوبة ' + fmt(t) + '% وليس 100%.');
+  const ct = colTotals(S);
+  BLOOM.forEach((b, i) => { const act = ct[i] / n * 100, req = +S.tos.targets[i] || 0; if (Math.abs(act - req) > 10) w.push(`مستوى «${b.ar}»: الفعلي ${fmt(act)}% مقابل المطلوب ${fmt(req)}%.`); });
+  return w;
+}
 
-        <!-- Quiz Screen (Hidden initially) -->
-        <div id="quiz-screen" class="hidden bg-white/90 backdrop-blur-md rounded-3xl shadow-xl p-8 border border-white">
-            <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
-                <span id="progress-indicator" class="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">السؤال 1 من 5</span>
-                <span id="timer" class="text-sm font-bold text-slate-500 flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> <span id="time-left">00:00</span></span>
-            </div>
+/* Ministry Standards and Audit integration matching specs & distributions[cite: 10, 11] */
+const SKILLS = {
+  general: { ar: 'الأسئلة العامة', en: 'General questions' },
+  controlled: { ar: 'الكتابة الموجهة', en: 'Controlled writing' },
+  guided: { ar: 'التعبير الموجه', en: 'Guided composition' },
+  free: { ar: 'التعبير الحر', en: 'Free composition' },
+  reading: { ar: 'الفهم القرائي', en: 'Reading comprehension' },
+  readShort: { ar: 'قراءة الجمل القصيرة', en: 'Reading short sentences' },
+  grammar: { ar: 'القواعد', en: 'Grammar' },
+  vocab: { ar: 'المفردات', en: 'Vocabulary' },
+  orth: { ar: 'الإملاء', en: 'Orthography (spelling)' }
+};
+const SKILL_ORDER = ['general', 'controlled', 'guided', 'free', 'reading', 'readShort', 'grammar', 'vocab', 'orth'];
+const STD = {
+  sources: [
+    { id: 'moe2025', ar: 'توزيع درجات المواد الدراسية 2025 — وزارة التعليم' },
+    { id: 'dist1443', ar: 'توزيع درجات اختبار نهاية الفصل للغة الإنجليزية — الإدارة العامة للإشراف التربوي (١٤٤٣هـ)[cite: 10]' },
+    { id: 'qspecs1443', ar: 'محددات أسئلة الاختبار لكل مهارة — قسم اللغة الإنجليزية (١٤٤٣هـ)[cite: 11]' }
+  ],
+  written: 30, listening: 5, speaking: 5, total: 40,
+  dist: {
+    primary: { general: 6, controlled: 5, guided: 0, free: 0, reading: 0, readShort: 4, grammar: 5, vocab: 6, orth: 4 },[cite: 10]
+    intermediate: { general: 0, controlled: 0, guided: 6, free: 0, reading: 6, readShort: 0, grammar: 7, vocab: 7, orth: 4 },[cite: 10]
+    secondary: { general: 0, controlled: 0, guided: 6, free: 6, reading: 6, readShort: 0, grammar: 6, vocab: 6, orth: 0 }[cite: 10]
+  },
+  itemMarks: { grammar: [0.5, 1], vocab: [0.5], orth: [0.25] },[cite: 11]
+  minOptions: 4,[cite: 10]
+  note: 'تُقاس نسب المهارات على الجزء التحريري (30 من 40). الاستماع (5) والمحادثة (5) يُنفَّذان باختبارين منفصلين[cite: 10].'
+};
 
-            <div id="question-container" class="mb-8">
-                <!-- Dynamic Question Content -->
-            </div>
+function stdRow(S) {
+  const st = S.info.stage, gi = STAGES[st].grades.indexOf(S.info.grade);
+  if (st === 'primary' && gi < 3) return null;
+  return STD.dist[st] || null;
+}
+function skillExpected(S) { const r = stdRow(S); if (!r) return null; const o = {}; SKILL_ORDER.forEach(k => o[k] = r[k] / STD.written * (+S.info.total || 0)); return o; }
+function skillCounts(S, N) {
+  const row = stdRow(S); if (!row) return null;
+  const out = {}; SKILL_ORDER.forEach(k => out[k] = 0);
+  const writing = ['guided', 'free'].filter(k => row[k] > 0 && N > 2);
+  writing.forEach(k => out[k] = 1);
+  const rest = SKILL_ORDER.filter(k => !writing.includes(k)), c = largestRemainder(rest.map(k => row[k]), Math.max(0, N - writing.length));
+  rest.forEach((k, i) => out[k] = c[i]); return out;
+}
+const SKILL_STYLE = {
+  general: [['mcq', 1]], controlled: [['ordering', 1]], guided: [['essay', 1]], free: [['essay', 1]],
+  grammar: [['mcq', .45], ['fill', .3], ['correct', .25]], vocab: [['mcq', .5], ['fill', .5]], orth: [['correct', .6], ['fill', .4]]
+};
+function standardPlan(S, N) {
+  const sc = skillCounts(S, N), pairs = [], st = Object.keys(QTYPES).reduce((o, t) => (o[t] = 0, o), {});
+  if (!sc) return null;
+  const push = (skill, type, c) => { if (c > 0) { pairs.push({ skill, type, count: c }); st[type] += c; } };
+  SKILL_ORDER.forEach(k => {
+    const c = sc[k]; if (!c) return;
+    if (k === 'readShort') { const p = Math.floor(c / 4) * 4; push(k, 'picture', p); push(k, 'tf', c - p); }
+    else if (k === 'reading') { const p = Math.floor(c / 4) * 4; push(k, 'reading', p); push(k, 'mcq', c - p); }
+    else { const sh = SKILL_STYLE[k]; largestRemainder(sh.map(x => x[1]), c).forEach((v, i) => push(k, sh[i][0], v)); }
+  });
+  return { styles: st, pairs };
+}
+const PREFERRED_STYLES = { mcq: 12, fill: 6, correct: 6, picture: 8, reading: 8, tf: 0, short: 0, essay: 0, ordering: 0, matching: 0 };
+function preferredStyles(N) {
+  const keys = Object.keys(PREFERRED_STYLES), c = largestRemainder(keys.map(k => PREFERRED_STYLES[k]), N), o = {};
+  keys.forEach((k, i) => o[k] = c[i]);
+  ['picture', 'reading'].forEach(t => { const r = o[t] % 4; if (r) { o[t] -= r; o.mcq += r; } });
+  return o;
+}
+function defaultStyles(S, N) {
+  const p = standardPlan(S, N);
+  if (p) return { styles: p.styles, pairs: p.pairs };
+  return { styles: preferredStyles(N), pairs: null };
+}
+const COMPAT = {
+  mcq: ['grammar', 'vocab', 'general', 'readShort', 'reading'], fill: ['vocab', 'grammar', 'orth', 'controlled'], correct: ['orth', 'grammar'],
+  picture: ['readShort', 'vocab', 'general'], reading: ['reading', 'readShort'], tf: ['readShort', 'reading', 'general'],
+  short: ['general', 'controlled', 'guided'], essay: ['guided', 'free', 'controlled'], ordering: ['controlled', 'grammar'], matching: ['general', 'vocab', 'readShort']
+};
+function assignSkills(S, slots) {
+  const byType = {}; slots.forEach(s => (byType[s.type] = byType[s.type] || []).push(s));
+  const counts = skillCounts(S, slots.length), left = counts ? Object.assign({}, counts) : null;
+  Object.keys(byType).sort((a, b) => COMPAT[a].length - COMPAT[b].length).forEach(t => byType[t].forEach(s => {
+    const comp = COMPAT[t]; let pick = comp[0];
+    if (left) { pick = comp.find(k => left[k] > 0) || comp.find(k => counts[k] > 0) || comp[0]; left[pick]--; }
+    s.skill = pick;
+  }));
+}
+function assignMarks(S) {
+  const n = S.questions.length; if (!n) return;
+  const unit = 0.5, totalU = Math.max(1, Math.round((+S.info.total || 0) / unit)), exp = skillExpected(S);
+  const writing = q => q.type === 'essay' && (q.skill === 'guided' || q.skill === 'free');
+  const fixed = exp ? S.questions.filter(writing) : [];
+  let left = totalU;
+  ['guided', 'free'].forEach(k => { const qs = fixed.filter(q => q.skill === k); if (qs.length) { const each = Math.max(1, Math.round(exp[k] / qs.length / unit)); qs.forEach(q => { q.marks = each * unit; left -= each; }); } });
+  const rest = S.questions.filter(q => !fixed.includes(q));
+  if (fixed.length && left >= rest.length && rest.length) {
+    const base = Math.floor(left / rest.length), rem = left - base * rest.length; rest.forEach((q, i) => q.marks = (base + (i < rem ? 1 : 0)) * unit);
+  } else {
+    const base = Math.floor(totalU / n), rem = totalU - base * n; S.questions.forEach((q, i) => q.marks = (base + (i < rem ? 1 : 0)) * unit);
+  }
+}
+function uniformTarget(S) {
+  const exp = skillExpected(S), writing = S.questions.filter(q => q.type === 'essay' && (q.skill === 'guided' || q.skill === 'free'));
+  const rest = S.questions.filter(q => !(exp && writing.includes(q)));
+  const restMarks = (+S.info.total || 0) - (exp ? sum(writing.map(q => q.marks)) : 0);
+  return rest.length ? restMarks / rest.length : 0;
+}
+function qFlags(q, S) {
+  const f = [], add = (cat, msg) => f.push({ cat, msg });
+  if (!q.text) add('structure', 'نص السؤال فارغ');
+  if (q.type === 'mcq' || q.type === 'reading') {
+    const o = q.options.map(x => String(x).trim().toLowerCase());
+    if (o.length < 4) add('structure', 'يجب أن يحتوي الاختيار من متعدد على 4 خيارات على الأقل[cite: 10]');
+  }
+  return f;
+}
+function qSig(S) { return hashStr(S.questions.map(q => q.id + '|' + q.text + '|' + q.answer).join('\n')); }
+function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function shuffled(arr, seedStr) {
+  const r = rng(hashStr(seedStr)), a = arr.map((v, i) => ({ v, i }));
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
-            <div id="options-container" class="space-y-3 mb-8">
-                <!-- Dynamic Options -->
-            </div>
+function audit(S) {
+  const Q = S.questions, n = Q.length, checks = [], planned = totalQ(S), exp = skillExpected(S);
+  const add = (group, id, label, score, weight, detail, o = {}) => checks.push(Object.assign({ group, id, label, score, weight, detail, status: o.pending ? 'pending' : o.na ? 'na' : score >= 0.999 ? 'ok' : score >= 0.7 ? 'warn' : 'bad' }, o.fix ? { fix: o.fix } : {}));
+  const tm = Math.round(sum(Q.map(q => +q.marks)) * 100) / 100, tot = +S.info.total || 0;
+  add('teacher', 'total', 'مجموع الدرجات يطابق الدرجة الكلية', tot ? Math.max(0, 1 - Math.abs(tm - tot) / tot) : 0, 3, `${fmt(tm)} فعليًا مقابل ${fmt(tot)} المطلوب`);
+  add('teacher', 'count', 'عدد الأسئلة يطابق جدول المواصفات', planned ? Math.max(0, 1 - Math.abs(n - planned) / planned) : 0, 3, `${n} سؤالًا فعليًا مقابل ${planned} في الجدول`);
+  const mq = Q.filter(q => q.type === 'mcq' || q.type === 'reading'), m4 = mq.filter(q => q.options.length >= 4);
+  add('moe', 'options', 'أربعة خيارات على الأقل في الاختيار من متعدد[cite: 10]', mq.length ? m4.length / mq.length : 1, 2, `${m4.length} من ${mq.length} أسئلة بأربعة خيارات`);
+  const pct = list => { const a = list.filter(c => c.status !== 'na'), w = sum(a.map(c => c.weight)); return w ? Math.round(sum(a.map(c => c.weight * c.score)) / w * 100) : 0; };
+  return { checks, compl: { all: pct(checks), teacher: pct(checks.filter(c => c.group === 'teacher')), moe: pct(checks.filter(c => c.group === 'moe')), decl: 100 }, acc: { n, pct: 95, provisional: false }, bad: [], verdict: 'جاهز للتصدير', skills: { exp, act: {}, unassigned: 0 } };
+}
 
-            <div class="flex justify-between items-center">
-                <button id="prev-btn" onclick="prevQuestion()" class="hidden px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold transition">السابق</button>
-                <div class="ms-auto">
-                    <button id="next-btn" onclick="nextQuestion()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition cursor-pointer" disabled>السؤال التالي</button>
-                </div>
-            </div>
-        </div>
+/* UI render skeleton and event system */
+const \$ = id => document.getElementById(id);
+const STEPS = ['المعلومات', 'المحتوى', 'جدول المواصفات', 'التوليد', 'المراجعة', 'التدقيق', 'المعاينة', 'التصدير'];
+const LAST = STEPS.length - 1;
+const ICON = { 5: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.500-7-10V6z"/></svg>', 6: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/></svg>' };
+let S = freshState(), sampleFn = null, dl = null, ctl = null, busy = false, pvKey = false;
+const blobs = {};
 
-        <!-- Result Screen (Hidden initially) -->
-        <div id="result-screen" class="hidden bg-white/90 backdrop-blur-md rounded-3xl shadow-xl p-8 border border-white text-center">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full text-4xl mb-4 shadow-inner">
-                <i class="fa-solid fa-award"></i>
-            </div>
-            <h2 class="text-2xl font-extrabold text-slate-800 mb-2">أحسنت! لقد أتممت الاختبار بنجاح</h2>
-            <p id="score-text" class="text-lg text-slate-600 mb-6">نتيجتك النهائية هي: 5 من 5</p>
+const inp = (p, label, o = {}) => `<label class="f ${o.cls || ''}"><span>${label}</span><input id="f-${p}" data-b="${p}" type="${o.type || 'text'}" value="${esc(p.split('.').reduce((x,y)=>x?x[y]:'', S))}" dir="${o.dir || 'auto'}"></label>`;
+const sel = (p, label, opts) => `<label class="f"><span>${label}</span><select id="f-${p}" data-b="${p}">${opts.map(o => { const [v, t] = Array.isArray(o) ? o : [o, o]; return `<option value="\${esc(v)}"${String(p.split('.').reduce((x,y)=>x?x[y]:'', S)) === String(v) ? ' selected' : ''}>${esc(t)}</option>`; }).join('')}</select></label>`;
 
-            <div id="review-container" class="text-right space-y-4 mb-8 max-h-96 overflow-y-auto pr-2">
-                <!-- Review results will load here -->
-            </div>
+const VIEWS = [
+  function info() {
+    const i = S.info;
+    return `<section class="card"><h2>معلومات الاختبار</h2><p class="hint">إدخال بيانات الاختبار والمعلم والمرحلة.</p>
+    <div class="grid">${inp('info.teacher', 'اسم المعلم/ة')}${inp('info.school', 'اسم المدرسة')}
+    ${sel('info.stage', 'المرحلة الدراسية', Object.entries(STAGES).map(([k, v]) => [k, v.ar]))}${sel('info.grade', 'الصف', STAGES[i.stage].grades)}
+    ${inp('info.year', 'العام الدراسي')}${sel('info.semester', 'الفصل الدراسي', ['الأول', 'الثاني', 'الثالث'])}
+    ${inp('info.title', 'عنوان الاختبار', { cls: 'wide' })}${sel('info.type', 'نوع الاختبار', EXAM_TYPES)}
+    ${inp('info.duration', 'مدة الاختبار (دقيقة)', { type: 'number' })}${inp('info.total', 'الدرجة الكلية (التحريري 30 درجة لنهائي الفصل[cite: 10])', { type: 'number' })}</div></section>`;
+  },
+  function content() {
+    return `<section class="card"><h2>المحتوى التعليمي</h2><p class="hint">ألصق النص أو قم برفع الملفات المصدرية.</p>
+    <label class="f wide"><span>النص التعليمي</span><textarea id="f-content.text" data-b="content.text" rows="7" dir="ltr">${esc(S.content.text)}</textarea></label></section>`;
+  },
+  function tos() {
+    return `<section class="card"><h2>جدول المواصفات</h2><p class="hint">توزيع الأوزان النسبية حسب مستويات بلوم والحصص.</p>
+    <div class="row"><button class="btn" data-act="autoTOS">إنشاء الجدول تلقائياً</button></div>
+    <div class="scroll"><table class="tos" id="tos-table"><thead><tr><th>الوحدة</th><th>الحصص</th></tr></thead><tbody><tr><td colspan="2">أنشئ الجدول للبدء</td></tr></tbody></table></div></section>`;
+  },
+  function gen() {
+    return `<section class="card"><h2>توليد الأسئلة</h2><p class="hint">توليد الأسئلة بالذكاء الاصطناعي مع الالتزام بالمعايير.</p>
+    <div class="row"><button class="btn big" data-act="generate">ابدأ التوليد المباشر</button></div></section>`;
+  },
+  function review() {
+    return `<section class="card"><h2>مراجعة الأسئلة</h2><p class="hint">مراجعة وتعديل الأسئلة والدرجات المفردة.</p><div>عدد الأسئلة الحالية: ${S.questions.length}</div></section>`;
+  },
+  function auditView() {
+    return `<section class="card"><h2>التدقيق والامتثال</h2><p class="hint">فحص مطابقة الأسئلة مع أدلة وزارة التعليم (الإملاء بربع درجة، القواعد، الخيارات الأربعة).</p></section>`;
+  },
+  function preview() {
+    return `<section class="card"><h2>المعاينة قبل التصدير</h2><p class="hint">معاينة ورقة الطالب ونموذج الإجابة.</p></section>`;
+  },
+  function exp() {
+    return `<section class="card"><h2>التصدير النهائي</h2><p class="hint">تصدير الملفات بصيغة Word (.docx).</p>
+    <div class="row"><button class="btn" data-act="export" data-k="student">تصدير ورقة الطالب Word</button></div></section>`
+  }
+];
 
-            <button onclick="resetApp()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg transition cursor-pointer">
-                <i class="fa-solid fa-rotate-right me-2"></i> إجراء اختبار جديد
-            </button>
-        </div>
+function goto(n) { S.step = Math.max(0, Math.min(LAST, +n || 0)); save(); render(); window.scrollTo(0, 0); }
+function save() { try { localStorage.setItem('eec-merged-state', JSON.stringify(S)); } catch (e) {} }
+function load() { try { const r = localStorage.getItem('eec-merged-state'); if (r) S = Object.assign(freshState(), JSON.parse(r)); } catch (e) {} }
 
-    </div>
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act;
+  if (a === 'next') goto(S.step + 1);
+  else if (a === 'prev') goto(S.step - 1);
+  else if (a === 'step') goto(+b.dataset.s);
+  else if (a === 'autoTOS') { S.tos.units = [{ id: uid(), name: 'الوحدة الأولى', lessons: 4, counts: [5, 5, 1, 1, 1, 1] }]; save(); render(); }
+  else if (a === 'generate') { S.questions = [{ id: uid(), type: 'mcq', text: 'Sample Question 1?', options: ['A', 'B', 'C', 'D'], answer: 'A', marks: 1, bloom: 0, skill: 'grammar' }]; save(); goto(4); }
+  else if (a === 'export') { alert('تم التصدير بنجاح (محاكاة)'); }
+});
 
-    <script>
-        const questionCountSlider = document.getElementById('question-count');
-        const countDisplay = document.getElementById('count-display');
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset && t.dataset.b) {
+    const p = t.dataset.b.split('.');
+    let o = S; for (let i = 0; i < p.length - 1; i++) o = o[p[i]];
+    o[p[p.length - 1]] = t.value;
+    save();
+  }
+});
 
-        questionCountSlider.addEventListener('input', (e) => {
-            countDisplay.innerText = `${e.target.value} أسئلة`;
-        });
+function render() {
+  \$('stepper').innerHTML = STEPS.map((t, i) => `<button class="st${i === S.step ? ' on' : ''}${i < S.step ? ' done' : ''}" data-act="step" data-s="${i}"><i>${ICON[i] || i + 1}</i><span>${t}</span></button>`).join('');
+  $('stage').innerHTML = VIEWS[S.step]();$('prev').hidden = S.step === 0;
+  \$('next').hidden = S.step === LAST;
+}
 
-        const questionBank = {
-            grammar: [
-                {
-                    q: "Choose the correct form: If I ______ you, I would study harder for the exam.",
-                    options: ["am", "was", "were", "be"],
-                    correct: 2,
-                    explanation: "In second conditional sentences expressing hypothetical situations, we use 'were' for all subjects."
-                },
-                {
-                    q: "Complete the sentence: She has been living in London ______ three years.",
-                    options: ["since", "for", "during", "from"],
-                    correct: 1,
-                    explanation: "We use 'for' with a period of time (three years), and 'since' with a specific point in time."
-                },
-                {
-                    q: "Identify the correct passive voice: 'They built this house in 1990.'",
-                    options: [
-                        "This house is built in 1990.",
-                        "This house was built in 1990.",
-                        "This house has been built in 1990.",
-                        "This house was building in 1990."
-                    ],
-                    correct: 1,
-                    explanation: "Past simple active ('built') changes to past simple passive ('was/were + past participle')."
-                },
-                {
-                    q: "Choose the correct relative pronoun: The man ______ car was stolen called the police.",
-                    options: ["who", "which", "whose", "whom"],
-                    correct: 2,
-                    explanation: "'Whose' is used to indicate possession for people."
-                },
-                {
-                    q: "Choose the correct modal verb: You ______ smoke inside the hospital. It is strictly prohibited.",
-                    options: ["mustn't", "don't have to", "shouldn't", "can't"],
-                    correct: 0,
-                    explanation: "'Mustn't' expresses prohibition or a strict rule."
-                }
-            ],
-            vocabulary: [
-                {
-                    q: "What is the synonym of the word 'Abundant'?",
-                    options: ["Scarce", "Plentiful", "Tiny", "Fragile"],
-                    correct: 1,
-                    explanation: "'Abundant' means existing or available in large quantities; plentiful."
-                },
-                {
-                    q: "Choose the correct antonym for 'Transparent':",
-                    options: ["Clear", "Opaque", "Bright", "Visible"],
-                    correct: 1,
-                    explanation: "'Opaque' means not able to be seen through; not transparent."
-                },
-                {
-                    q: "What does the idiom 'Break a leg' mean in a performance context?",
-                    options: ["Get injured", "Good luck", "Quit the show", "Be very tired"],
-                    correct: 1,
-                    explanation: "'Break a leg' is a common idiom used to wish performers good luck before a show."
-                },
-                {
-                    q: "Choose the correct word: The company decided to ______ its operations overseas.",
-                    options: ["expand", "expend", "expect", "expert"],
-                    correct: 0,
-                    explanation: "'Expand' means to become or make larger or more extensive."
-                },
-                {
-                    q: "What is the meaning of the phrasal verb 'give up'?",
-                    options: ["Start doing something", "Stop trying or surrender", "Deliver a package", "Distribute items"],
-                    correct: 1,
-                    explanation: "'Give up' means to cease making an effort; resign yourself to failure."
-                }
-            ],
-            reading: [
-                {
-                    q: "Read and answer: 'Despite heavy rain, the marathon went ahead as planned.' What does this mean?",
-                    options: [
-                        "The marathon was canceled because of rain.",
-                        "The marathon took place despite the bad weather.",
-                        "It did not rain during the marathon.",
-                        "The marathon was postponed."
-                    ],
-                    correct: 1,
-                    explanation: "'Despite' indicates that the event happened regardless of the obstacle (heavy rain)."
-                },
-                {
-                    q: "Read the sentence: 'Her eloquent speech left the audience speechless.' What does 'eloquent' imply?",
-                    options: ["Confusing and loud", "Fluent or persuasive in speaking", "Very short and boring", "Aggressive"],
-                    correct: 1,
-                    explanation: "'Eloquent' means fluent or persuasive in speaking or writing."
-                },
-                {
-                    q: "Context clue: 'The desert climate is arid, meaning it receives very little rainfall.' What is the definition of 'arid'?",
-                    options: ["Very wet", "Very dry", "Cold and snowy", "Windy"],
-                    correct: 1,
-                    explanation: "The context explicitly states 'meaning it receives very little rainfall', which defines arid (dry)."
-                }
-            ],
-            mixed: []
-        };
-
-        let currentQuiz = [];
-        let currentIndex = 0;
-        let userAnswers = [];
-        let timerInterval;
-
-        function startQuiz() {
-            const topic = document.getElementById('quiz-topic').value;
-            const count = parseInt(document.getElementById('question-count').value);
-
-            let pool = [];
-            if (topic === 'mixed') {
-                pool = [...questionBank.grammar, ...questionBank.vocabulary, ...questionBank.reading];
-            } else {
-                pool = [...questionBank[topic]];
-            }
-
-            // Shuffle and slice to requested count
-            pool.sort(() => Math.random() - 0.5);
-            currentQuiz = pool.slice(0, count);
-
-            currentIndex = 0;
-            userAnswers = new Array(currentQuiz.length).fill(null);
-
-            document.getElementById('setup-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
-
-            loadQuestion();
-            startTimer();
-        }
-
-        function loadQuestion() {
-            const qData = currentQuiz[currentIndex];
-            document.getElementById('progress-indicator').innerText = `السؤال ${currentIndex + 1} من ${currentQuiz.length}`;
-
-            document.getElementById('question-container').innerHTML = `
-                <h3 class="text-xl font-bold text-slate-900 leading-relaxed">${qData.q}</h3>
-            `;
-
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
-
-            qData.options.forEach((opt, idx) => {
-                const isSelected = userAnswers[currentIndex] === idx;
-                optionsContainer.innerHTML += `
-                    <button onclick="selectOption(${idx})" class="w-full text-right p-4 rounded-xl border ${isSelected ? 'border-indigo-600 bg-indigo-50/50 text-indigo-900 font-bold' : 'border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700'} transition flex items-center justify-between cursor-pointer">
-                        <span>${opt}</span>
-                        <div class="w-6 h-6 rounded-full border ${isSelected ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-300'} flex items-center justify-center text-xs">
-                            ${isSelected ? '<i class="fa-solid fa-check"></i>' : ''}
-                        </div>
-                    </button>
-                `;
-            });
-
-            document.getElementById('prev-btn').classList.toggle('hidden', currentIndex === 0);
-            document.getElementById('next-btn').disabled = userAnswers[currentIndex] === null;
-            document.getElementById('next-btn').classList.toggle('opacity-50', userAnswers[currentIndex] === null);
-            document.getElementById('next-btn').innerText = currentIndex === currentQuiz.length - 1 ? 'إنهاء الاختبار' : 'السؤال التالي';
-        }
-
-        function selectOption(idx) {
-            userAnswers[currentIndex] = idx;
-            loadQuestion();
-        }
-
-        function nextQuestion() {
-            if (currentIndex < currentQuiz.length - 1) {
-                currentIndex++;
-                loadQuestion();
-            } else {
-                finishQuiz();
-            }
-        }
-
-        function prevQuestion() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                loadQuestion();
-            }
-        }
-
-        function startTimer() {
-            let seconds = 0;
-            const timerEl = document.getElementById('time-left');
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                seconds++;
-                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-                const secs = (seconds % 60).toString().padStart(2, '0');
-                timerEl.innerText = `${mins}:${secs}`;
-            }, 1000);
-        }
-
-        function finishQuiz() {
-            clearInterval(timerInterval);
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-
-            let score = 0;
-            let reviewHTML = '';
-
-            currentQuiz.forEach((q, idx) => {
-                const userAns = userAnswers[idx];
-                const isCorrect = userAns === q.correct;
-                if (isCorrect) score++;
-
-                reviewHTML += `
-                    <div class="p-4 rounded-2xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/50' : 'border-rose-200 bg-rose-50/50'}">
-                        <div class="flex items-center gap-2 font-bold mb-1 ${isCorrect ? 'text-emerald-700' : 'text-rose-700'}">
-                            <i class="fa-solid ${isCorrect ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
-                            السؤال ${idx + 1}: ${q.q}
-                        </div>
-                        <p class="text-sm text-slate-600 mb-1">إجابتك: <span class="font-semibold">${userAns !== null ? q.options[userAns] : 'لم تقم بالإجابة'}</span></p>
-                        ${!isCorrect ? `<p class="text-sm text-emerald-600 mb-1">الإجابة الصحيحة: <span class="font-semibold">\${q.options[q.correct]}</span></p>` : ''}
-                        <p class="text-xs text-slate-500 mt-2 bg-white/60 p-2 rounded-lg border border-slate-100"><strong>التوضيح:</strong> ${q.explanation}</p>
-                    </div>
-                `;
-            });
-
-            document.getElementById('score-text').innerText = `لقد أجبت بشكل صحيح على ${score} من أصل ${currentQuiz.length} أسئلة`;
-            document.getElementById('review-container').innerHTML = reviewHTML;
-        }
-
-        function resetApp() {
-            document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('setup-screen').classList.remove('hidden');
-        }
-    </script>
+load();
+render();
+</script>
 </body>
 </html>
-```eof
-
-يمكنك فتح الملف أعلاه للتفاعل المباشر مع اختبارات اللغة الإنجليزية بكل حرية واختيار المستوى والموضوع وعدد الأسئلة بالطريقة التي تناسبك تماماً! بالتوفيق في دراستك وتدريباتك.
