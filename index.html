@@ -72,14 +72,6 @@ table.mini tr.cur td{background:var(--accent-soft);font-weight:600}
 .ppass{border:1px solid #999;background:#fafafa;padding:8px 12px;margin:8px 0}.ppics{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0}.ppics figure{margin:0;text-align:center}.ppics img{width:92px;height:92px;border:1px solid #bbb}
 .paper .ak{color:#0b6b2a;font-weight:600}.pm{margin:4px 0}.pins{font-style:italic}
 @media (max-width:560px){.paper{padding:16px 14px}}
-#asst-fab{position:fixed;inset-inline-end:16px;bottom:78px;z-index:9;border-radius:999px;padding:10px 18px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
-#asst{position:fixed;inset-inline-end:16px;bottom:130px;width:min(400px,calc(100vw - 32px));height:min(520px,calc(100vh - 170px));z-index:9;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden}
-#asst[hidden]{display:none}#asst header{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--accent-soft)}#asst header .hint{margin:0;flex:1;font-size:.78rem}
-.amsgs{flex:1;overflow:auto;padding:12px;display:grid;gap:10px;align-content:start}.am{max-width:92%;padding:8px 12px;border-radius:12px;font-size:.88rem}.am p{margin:0}.am.u{background:var(--accent);color:var(--accent-ink);justify-self:start}.am.a{background:var(--bg);border:1px solid var(--line);justify-self:end}
-.aacts{list-style:none;padding:0;margin:8px 0 6px;display:grid;gap:6px}.aacts li{display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--surface);font-size:.82rem}.aacts li.ok{background:var(--ok-soft)}
-.achips{display:flex;gap:6px;flex-wrap:wrap;padding:6px 12px;border-top:1px solid var(--line)}.achips .chip{cursor:pointer;font:inherit;font-size:.78rem;color:var(--ink)}
-.ain{display:flex;gap:8px;padding:8px 12px;border-top:1px solid var(--line)}.ain textarea{flex:1;resize:none}
-@media (max-width:560px){#asst{inset-inline:8px;width:auto;bottom:128px}}
 @media (max-width:560px){body{font-size:14px}.card{padding:14px}.btn.big{width:100%}}
 @media (prefers-reduced-motion:no-preference){.btn,.st,.exp{transition:border-color .15s,background .15s}}
 </style>
@@ -101,7 +93,6 @@ table.mini tr.cur td{background:var(--accent-soft);font-weight:600}
 <tr><td>تصدير PDF مباشر</td><td class="n">عبر Word ← حفظ كـ PDF (المباشر يحتاج خادمًا)</td></tr>
 <tr><td>أنماط الأسئلة: اختيار من متعدد، إكمال، اكتشف الخطأ، مطابقة جملة بصورة، فهم المقروء</td><td class="y">يعمل. الصور رسوم SVG بسيطة يرسمها Claude (يمكن استبدالها بصور المعلم)</td></tr>
 <tr><td>درجتا الاستماع (5) والمحادثة (5) من اختبار الوزارة</td><td class="n">لا تُولَّد هنا (الجزء التحريري 30 فقط)</td></tr>
-<tr><td>مساعد المعلم (يشرح كل خطوة ونقاط الاختبار ويقترح تعديلات تُنفَّذ بموافقتك)</td><td class="y">يعمل بمساعدة Claude: داخل Claude، أو في النسخة المستقلة بمفتاحك الخاص</td></tr>
 <tr><td>الاستماع (توليد صوت)، تحليل الصوت المرفوع، صور فوتوغرافية مولّدة</td><td class="n">تحتاج خدمات خارجية (نص إلى كلام، تحويل صوت إلى نص، توليد صور)</td></tr>
 <tr><td>الاختبار الإلكتروني وروابط الطلاب وجمع الإجابات والتصحيح الآلي</td><td class="n">تحتاج خادمًا وقاعدة بيانات</td></tr>
 <tr><td>تسجيل دخول المعلمين برمز البريد، لوحة المسؤول، إشعارات البريد، بنك الأسئلة المشترك</td><td class="n">تحتاج خادمًا وخدمة بريد وقاعدة بيانات</td></tr>
@@ -109,7 +100,6 @@ table.mini tr.cur td{background:var(--accent-soft);font-weight:600}
 <nav id="stepper" aria-label="خطوات إنشاء الاختبار"></nav>
 <div id="msg" role="status" aria-live="polite" hidden></div><div id="feat" hidden></div>
 <main id="stage"></main></div>
-<aside id="asst" hidden aria-label="مساعد المعلم"></aside><button class="btn" id="asst-fab" data-act="asstToggle" aria-expanded="false">مساعد المعلم</button>
 <nav class="actions"><div class="in"><button class="btn ghost" id="prev" data-act="prev" hidden>السابق</button><span></span><button class="btn" id="next" data-act="next">التالي</button></div></nav>
 <script>/*!
 
@@ -140,7 +130,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     throw { code: 'bad_json', message: 'تعذّر فهم رد Claude. أعد المحاولة.' };
   }
   async function call(prompt, o) {
-    const key = get(KEYN); if (!key) { openBox(); throw { code: 'no_key' }; }
+    const key = get(KEYN); if (!key) { const as = document.getElementById('asst'); if (!as || as.hidden) openBox(); throw { code: 'no_key' }; }
     const model = (o && o.model) || get(MODELN) || TIER[(o && o.modelTier) || 'default'] || TIER.default;
     const content = [];
     for (const im of (o && o.images) || []) content.push({ type: 'image', source: { type: 'base64', media_type: im.type || 'image/png', data: await b64(im) } });
@@ -158,6 +148,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     json: async (p, o) => parseJSON(await call(p, o)),
     limits: async () => ({ images: true })
   });
+  window.eecKey = { has: () => !!get(KEYN), set: k => { put(KEYN, k); } };
   window.claude = { use: async name => name === 'sample' ? sample : null };
 
   /* settings box */
@@ -1117,7 +1108,7 @@ const VIEWS = [
     if (!S.questions.length) return '<section class="card"><p>لا توجد أسئلة بعد. ارجع إلى خطوة التوليد.</p></section>';
     return `<section class="card"><h2>التدقيق</h2>
       <p class="hint">يقيس هذا التدقيق <b>دقة الاختبار</b> (نسبة الأسئلة السليمة بنيويًا ولغويًا وفي الإجابات) و<b>الامتثال</b> لمتطلبات المعلم ومعايير وزارة التعليم المحفوظة في التطبيق. الفحوص البنيوية آلية فورية؛ أما صحة الإجابات والغموض واللغة والملاءمة فيراجعها Claude عند الضغط على «تشغيل التدقيق».</p>
-      <div class="row"><button class="btn big" data-act="runAudit" ${busy ? 'disabled' : ''}>تشغيل التدقيق بواسطة Claude</button><button class="btn ghost" data-act="standards">عرض المعايير المعتمدة</button><button class="btn ghost" data-act="aFix">اطلب من المساعد معالجة الملاحظات</button></div>
+      <div class="row"><button class="btn big" data-act="runAudit" ${busy ? 'disabled' : ''}>تشغيل التدقيق بواسطة Claude</button><button class="btn ghost" data-act="standards">عرض المعايير المعتمدة</button></div>
       <div id="qa-prog" class="prog" hidden></div></section>
     <div id="aud">${auditHTML()}</div>
     <section class="card"><h3>جدول المواصفات (قابل للتعديل)</h3>
@@ -1396,156 +1387,6 @@ function uploadLogo(f) {
 }
 
 
-/* ---------- teacher assistant (agentic: proposes actions, the teacher approves) ---------- */
-let asstOpen = false, asstBusy = false; const chat = [];
-const STEP_CHIPS = [
-  ['ماذا أملأ في هذه الخطوة؟', 'اقترح عنوانًا مناسبًا للاختبار'],
-  ['ما المحتوى المناسب لرفعه؟', 'هل المحتوى المرفوع كافٍ؟'],
-  ['اشرح لي جدول المواصفات', 'طبّق قالب 40 فقرة × 0.5'],
-  ['اشرح توزيع أنماط الأسئلة', 'ما الفرق بين معايير الوزارة وأنماطي المفضلة؟'],
-  ['ما أهم نقاط مراجعة الأسئلة؟', 'راجع الأسئلة واقترح تحسينات'],
-  ['اشرح لي نتيجة التدقيق', 'عالج ملاحظات التدقيق'],
-  ['اشرح لي نقاط هذا الاختبار', 'هل الاختبار جاهز للتصدير؟'],
-  ['ما الملفات التي أصدّرها؟', 'لخّص الاختبار في فقرة للمدير']
-];
-const ASST_FIELDS = ['text', 'opt0', 'opt1', 'opt2', 'opt3', 'answer', 'wrong', 'fix', 'marks', 'skill', 'bloom'];
-function asstKB() {
-  const rules = SKILL_ORDER.map(k => `- ${SKILLS[k].ar} (${SKILLS[k].en}): ${(STD.rules[k] || []).join(' | ')} | Question formats: ${(STD.catalog[k] || []).join(' | ')}`).join('\n');
-  const dist = Object.keys(STD.dist).map(k => `${STAGES[k].ar}: ` + SKILL_ORDER.filter(x => STD.dist[k][x] > 0).map(x => `${SKILLS[x].ar} ${STD.dist[k][x]}`).join('، ') + ' (من 30)').join('\n');
-  return `=== FULL KNOWLEDGE BASE OF THE APP (authoritative; answer from this and from APP STATE; if something is not here, say you don't know instead of guessing) ===
-WHAT THE APP IS: an Arabic web app that helps Saudi English teachers (primary to secondary) build a written English exam as a Word (.docx) paper from their own uploaded content and a Table of Specifications (TOS). No teacher or school names are predefined. Questions are generated in English by Claude; the interface is Arabic.
-8-STEP WIZARD: 1 المعلومات (teacher, school, stage/grade, year, semester, title, exam type, duration, total marks, school logo placed top-left on exports) | 2 المحتوى (upload Word/PDF-with-text/txt/csv/xlsx/images, or paste text; audio files are listed but NOT analysed; scanned PDFs give no text; source mode: "from uploaded content only" is the default and flags unsupported items, or "content + related educational knowledge") | 3 جدول المواصفات (auto from unit names weighted by lessons, manual entry, or upload an existing TOS which Claude converts; six Bloom levels with target %; automatic totals, actual %, marks and warnings; editable; preset "40 items x 0.5 = 20 marks" with Bloom 17/18/1/2/1/1 = 42.5/45/2.5/5/2.5/2.5 %) | 4 التوليد (distribute question styles then generate by chunks; reading passages and picture sets come in groups of 4 questions) | 5 المراجعة (edit text/options/answers/marks/skill/Bloom/unit, move, delete, replace with a new AI question, add a question, rebalance marks equally) | 6 التدقيق (accuracy % and compliance % with check lists, skill table, TOS match, flagged questions, declarations, editable TOS; "تشغيل التدقيق" runs a Claude review) | 7 المعاينة (student paper / answer key preview) | 8 التصدير (Word files: student paper, answer key, table of specifications with actual comparison, grading rubrics, audit report; PDF = open the Word file and Save As PDF).
-QUESTION STYLES: mcq (4 options, answer letter shuffled by the app), fill-in-the-blank, find-and-correct the mistake, match sentence to picture (4 questions share 4 simple SVG pictures drawn by Claude, replaceable by the teacher's own images), reading comprehension (passage + 4 MCQ), true/false, short answer, essay/writing (fixed marks with 4-criteria rubric: vocabulary & language, punctuation, coherence, relevance), ordering (scrambled words), matching.
-TEACHER RULES THE APP ENFORCES: total 20 marks by default; each item usually 0.5 mark (40 items); mostly easy items; NO meta-language questions (no questions about grammar terms such as noun/verb/tense names or isolated word forms); every item inside a meaningful context; varied styles; no duplicate questions; items must come from the uploaded content (strict mode).
-BLOOM: Remembering(التذكر) recall facts/words; Understanding(الفهم) explain/choose by meaning; Applying(التطبيق) use rule in a new sentence; Analyzing(التحليل) compare/find error cause; Evaluating(التقويم) judge/justify; Creating(الإبداع) write/compose. Teacher's preferred mix for 40 items: 17 remembering, 18 understanding, 1 applying, 2 analyzing, 1 evaluating, 1 creating.
-MINISTRY OF EDUCATION STANDARDS SAVED IN THE APP (sources: ${STD.sources.map(x => x.ar).join(' ; ')}):
-Overall subject grade: ${STD.overall.map(r => r[0] + ' ' + r[1]).join(' + ')}. End-term exam = 30 written + 5 listening + 5 speaking = 40; the app builds ONLY the written 30 (listening/speaking are separate tests, not generated).
-Written-mark distribution per stage:
-${dist}
-(The uploaded official table covers primary grades 4-6, intermediate and secondary; it does NOT cover primary grades 1-3, so skills are not measured there.)
-General rules: ${STD.general.join(' | ')}
-Question-preparation rules: ${STD.prep.join(' | ')}
-Per-skill specifications:
-${rules}
-Item marks in the Ministry text: grammar 0.5 or 1, vocabulary 0.5, orthography 0.25; at least 3 different formats for grammar and for vocabulary; MCQ at least 4 options (the Ministry's own sample sometimes shows 3).
-KNOWN CONFLICTS (explain honestly when asked): (1) orthography is 1/4 mark in the Ministry text but the teacher asked for 0.5 per item -> the audit flags it, nothing is changed automatically; (2) Primary grade 6 has no reading-comprehension passage in the official table (only short-sentence reading), while the teacher's preferred mix has 8 reading items -> default styles follow the Ministry table and the button "أنماطي المفضلة" (12 MCQ, 6 fill, 6 correct, 8 picture, 8 reading) deviates and the audit shows it; (3) writing tasks (guided/free) get fixed marks with the 4-criteria rubric instead of 0.5.
-THE AUDIT: two percentages. ACCURACY % = questions with no flag / all questions. Structural flags are automatic (missing/duplicate options, answer not among options, empty text, no blank in fill item, wrong word absent in find-mistake item, fewer than 3 ordering items, etc.). Claude's review adds: answer (wrong/also-correct key), ambiguity, language (grammar/punctuation error), spelling (non-intentional). Until Claude's review is run the percentage is marked "مبدئية". COMPLIANCE % = weighted average of checks (score 0-1 x weight): teacher group - total marks 3, question count 3, uniform mark 2, Bloom/unit match with TOS 4, all units covered 2, style variety 1, no duplicates 2, content-only source 2, no meta-language 3, contextual (Claude) 2, easy level (Claude) 2; Ministry group - skill-mark distribution 5, item marks per skill 2, formats variety 2, 4 options 2, context 1, writing rubric 1, total by exam type 1; teacher declarations 1 each (reviewed questions, covers student book and activity book, reading passage rights). Checks that don't apply or wait for Claude are excluded. Verdict: min(accuracy, compliance) >= 95 ready; >= 80 good with notes; else needs review; provisional until Claude's review runs. After ANY edit to a question the Claude review becomes stale and must be re-run. The percentages are an automated estimate to help the teacher, NOT an official accreditation and they do not replace teacher review.
-HOW EXPORT IS GATED: if any check is warn/bad/pending, or accuracy is provisional, the teacher must tick an acknowledgement before exporting.
-LIMITS (be honest): no listening audio, no speech, no AI image generation (pictures are simple SVG drawings), no OCR of scanned PDFs, no electronic exam links or student answer collection, no teacher login or shared question bank, no direct PDF export, the AI works only inside Claude (not in the downloaded standalone HTML file), AI output can contain mistakes, so the teacher must review every question and key; essay marks proposed by AI are provisional.
-ANSWERING STYLE: be accurate, specific to the teacher's current state (cite question numbers, numbers and check names), explain WHY, give the exact next click or an ACTION proposal, and never invent Ministry rules that are not listed above. If the teacher asks about a point outside this knowledge (e.g. an official rule not listed), say it is not in the saved documents and suggest checking the official source.`;
-}
-const KB_CACHE = {};
-function asstContext() {
-  const i = S.info, A = S.questions.length ? audit(S) : null;
-  const o = { step: S.step + 1, stepName: STEPS[S.step], exam: { teacher: i.teacher, school: i.school, stage: STAGES[i.stage].en, grade: i.grade, semester: i.semester, year: i.year, type: i.type, title: i.title, totalMarks: +i.total, duration: i.duration, hasLogo: !!i.logo },
-    content: { strictFromContent: S.content.strict, chars: materialText().length, files: S.content.files.map(f => ({ name: f.name, kind: f.kind, chars: f.chars, note: f.note })), excerpt: materialText().slice(0, 3500) },
-    tos: { method: S.tos.method, units: S.tos.units.map(u => ({ name: u.name, lessons: u.lessons, objectives: String(u.objectives || '').split('\n').filter(Boolean).slice(0, 8), counts_by_bloom: u.counts })), bloomOrder: BLOOM.map(b => b.en), targetsPct: S.tos.targets, totalQuestions: totalQ(S), marksPerQuestion: fmt(marksPerQ(S)), warnings: tosWarnings(S) },
-    styles: S.styles, expectedSkillCounts: skillCounts(S, totalQ(S)), aiAvailable: !!sampleFn };
-  if (A) {
-    o.audit = { accuracyPct: A.acc.pct, compliancePct: A.compl.all, byGroup: A.compl, provisional: A.acc.provisional, claudeReviewRun: A.acc.aiRan, reviewStale: A.acc.aiStale, verdict: A.verdict, checks: A.checks.map(c => ({ group: c.group, label: c.label, status: c.status, weight: c.weight, detail: c.detail })), flaggedQuestions: A.bad.map(b => ({ n: b.i + 1, issues: b.msgs })), skillMarks: { expected: A.skills.exp, actual: A.skills.act } };
-    const grp = {}; S.groups.forEach(g => grp[g.id] = g);
-    o.questions = S.questions.map((q, k) => { const g = q.group && grp[q.group]; return { n: k + 1, type: q.type, skill: q.skill, bloom: BLOOM[q.bloom].en, unit: (S.tos.units.find(u => u.id === q.unit) || {}).name, marks: q.marks, text: q.text.slice(0, 320), options: q.options.length ? q.options.map(x => x.slice(0, 80)) : undefined, answer: String(q.answer).slice(0, 120), wrong: q.wrong || undefined, fix: q.fix || undefined, items: q.items.length ? q.items : undefined, pairs: q.pairs.length ? q.pairs : undefined, alternatives: q.alternatives.length ? q.alternatives : undefined, passageTitle: g && g.kind === 'reading' ? g.title : undefined, passage: g && g.kind === 'reading' && !KB_CACHE[g.id + k] ? g.passage.slice(0, 700) : undefined }; });
-    const seenP = {}; o.questions.forEach(q => { const s0 = S.questions[q.n - 1]; if (s0.group) { if (seenP[s0.group]) delete q.passage; seenP[s0.group] = 1; } });
-  }
-  return JSON.stringify(o).slice(0, 30000);
-}
-function buildAsstPrompt(msg) {
-  const hist = chat.slice(-10).map(m => (m.role === 'u' ? 'TEACHER: ' : 'ASSISTANT: ') + m.text).join('\n');
-  return `You are "مساعد المعلم", an expert assistant inside an Arabic web app that builds English exams for Saudi teachers (primary to secondary). Reply in Arabic (keep English only for exam wording). Your job: help the teacher do the CURRENT step very well, answer ANY question about the app, the exam, the Table of Specifications, Bloom levels, question styles, the Ministry standards saved in the app, the audit percentages and the exported files — accurately, using the KNOWLEDGE BASE and APP STATE below. Be concrete and brief unless the teacher asks for detail; cite numbers, question numbers and check names. Never claim something is done unless it is one of your proposed ACTIONS (the teacher must approve each one). Never invent rules, numbers or features; if unknown, say so plainly.
-${asstKB()}
-
-STEPS (index for goto): 0 info, 1 content, 2 table of specifications, 3 generation, 4 review, 5 audit, 6 preview, 7 export.
-ALLOWED ACTIONS (JSON objects, max 8, only when really useful):
-{"type":"goto","step":0-7}
-{"type":"setInfo","field":"title|year|duration|total|semester","value":"..."}
-{"type":"presetTOS"}   // 40 items x 0.5 = 20 marks, Bloom 17/18/1/2/1/1
-{"type":"styles","mode":"moe|preferred"}
-{"type":"editQuestion","n":question number,"field":"text|opt0|opt1|opt2|opt3|answer|wrong|fix|marks|skill|bloom","value":"new value (skill: general|controlled|guided|free|reading|readShort|grammar|vocab|orth; bloom: 0-5 index in order Remembering..Creating; mcq answer: A-D)"}
-{"type":"regenQuestion","n":question number}
-{"type":"generate"}  {"type":"runAudit"}  {"type":"rebalance"}
-When fixing a question, change only what is wrong and keep the item easy, contextual and non-meta; explain why in the reply.
-Return ONLY JSON: {"reply":"Arabic answer","actions":[...]}  (actions may be empty).
-
-APP STATE (JSON): ${asstContext()}
-
-CONVERSATION SO FAR:
-${hist || '(none)'}
-TEACHER: ${msg}`;
-}
-function describeAct(a) {
-  const q = n => `السؤال ${a.n}`;
-  switch (a.type) {
-    case 'goto': return `الانتقال إلى خطوة «${STEPS[a.step]}»`;
-    case 'setInfo': return `ضبط ${({ title: 'عنوان الاختبار', year: 'العام الدراسي', duration: 'المدة', total: 'الدرجة الكلية', semester: 'الفصل' })[a.field]}: ${a.value}`;
-    case 'presetTOS': return 'تطبيق قالب 40 فقرة × 0.5 (20 درجة) وتوزيع الأنماط';
-    case 'styles': return a.mode === 'moe' ? 'توزيع الأنماط حسب معايير الوزارة' : 'توزيع الأنماط حسب أنماطي المفضلة';
-    case 'editQuestion': return `${q()} — تعديل «${a.field}» إلى: ${String(a.value).slice(0, 90)}`;
-    case 'regenQuestion': return `استبدال ${q()} بسؤال جديد`;
-    case 'generate': return 'توليد الاختبار كاملًا (يستبدل الأسئلة الحالية)';
-    case 'runAudit': return 'تشغيل التدقيق بواسطة Claude';
-    case 'rebalance': return 'إعادة توزيع الدرجات بالتساوي';
-  }
-  return '';
-}
-function cleanActs(arr) {
-  const out = [];
-  (Array.isArray(arr) ? arr : []).slice(0, 8).forEach(a => {
-    if (!a || typeof a !== 'object') return; const nq = S.questions.length;
-    if (a.type === 'goto' && Number.isInteger(+a.step) && +a.step >= 0 && +a.step <= LAST) out.push({ type: 'goto', step: +a.step });
-    else if (a.type === 'setInfo' && ['title', 'year', 'duration', 'total', 'semester'].includes(a.field) && a.value != null && String(a.value).trim()) out.push({ type: 'setInfo', field: a.field, value: String(a.value).slice(0, 120) });
-    else if (a.type === 'presetTOS') out.push({ type: 'presetTOS' });
-    else if (a.type === 'styles' && (a.mode === 'moe' || a.mode === 'preferred')) out.push({ type: 'styles', mode: a.mode });
-    else if (a.type === 'editQuestion' && ASST_FIELDS.includes(a.field) && Number.isInteger(+a.n) && +a.n >= 1 && +a.n <= nq && a.value != null) out.push({ type: 'editQuestion', n: +a.n, field: a.field, value: String(a.value) });
-    else if (a.type === 'regenQuestion' && Number.isInteger(+a.n) && +a.n >= 1 && +a.n <= nq) out.push({ type: 'regenQuestion', n: +a.n });
-    else if (['generate', 'runAudit', 'rebalance'].includes(a.type)) out.push({ type: a.type });
-  });
-  return out;
-}
-async function doAction(a) {
-  if (a.type === 'goto') { for (let s = S.step; s < a.step; s++) { const m = validateStep(s); if (m) throw new Error(m); } goto(a.step); }
-  else if (a.type === 'setInfo') { const f = a.field, v = ['duration', 'total'].includes(f) ? +a.value : a.value; if (['duration', 'total'].includes(f) && !(v > 0)) throw new Error('قيمة غير صالحة'); S.info[f] = v; if (f === 'total') S.ackTOS = false; save(); render(); }
-  else if (a.type === 'presetTOS') { S.info.total = 20; S.tos.autoN = 40; S.tos.targets = [42.5, 45, 2.5, 5, 2.5, 2.5]; const d = defaultStyles(S, 40); S.styles = d.styles; S.pairs = d.pairs; await autoTOS(); }
-  else if (a.type === 'styles') { const N = totalQ(S); if (!N) throw new Error('أنشئ جدول المواصفات أولًا'); if (a.mode === 'moe') { const d = defaultStyles(S, N); S.styles = d.styles; S.pairs = d.pairs; } else { S.styles = preferredStyles(N); S.pairs = null; } save(); render(); }
-  else if (a.type === 'editQuestion') {
-    const q = S.questions[a.n - 1]; if (!q) throw new Error('السؤال غير موجود'); let v = a.value;
-    if (a.field === 'answer' && (q.type === 'mcq' || q.type === 'reading')) { v = v.trim().toUpperCase().slice(0, 1); if (!'ABCD'.includes(v)) throw new Error('الإجابة يجب أن تكون A–D'); }
-    if (a.field === 'bloom') { v = +v; if (!(v >= 0 && v <= 5)) throw new Error('مستوى بلوم 0–5'); }
-    if (a.field === 'skill' && v && !SKILLS[v]) throw new Error('مهارة غير معروفة');
-    if (a.field === 'marks' && !(+v >= 0)) throw new Error('درجة غير صالحة');
-    applyQEdit(q, a.field, v); save(); render();
-  }
-  else if (a.type === 'regenQuestion') { const q = S.questions[a.n - 1]; if (!q) throw new Error('السؤال غير موجود'); await regen(q.id); }
-  else if (a.type === 'generate') { await generate(); }
-  else if (a.type === 'runAudit') { await runAudit(); }
-  else if (a.type === 'rebalance') { assignMarks(S); save(); render(); }
-}
-function renderAsst() {
-  const el = $('asst'); if (!el) return; el.hidden = !asstOpen; $('asst-fab').setAttribute('aria-expanded', asstOpen); if (!asstOpen) return;
-  const old = $('asst-in') ? $('asst-in').value : '';
-  const msgs = chat.map((m, mi) => `<div class="am ${m.role}"><p>${esc(m.text).replace(/\n/g, '<br>')}</p>${(m.actions || []).length ? `<ul class="aacts">${m.actions.map((a, ai) => `<li class="${m.done && m.done[ai] || ''}"><span>${esc(describeAct(a))}</span>${m.done && m.done[ai] === 'ok' ? '<b class="ok">✓ نُفِّذ</b>' : m.done && m.done[ai] && m.done[ai] !== 'ok' ? `<b class="bad">✕ ${esc(m.done[ai])}</b>` : `<button class="btn sm" data-act="aAct" data-m="${mi}" data-i="${ai}" ${asstBusy ? 'disabled' : ''}>تطبيق</button>`}</li>`).join('')}</ul>${m.actions.length > 1 ? `<button class="btn ghost sm" data-act="aAll" data-m="${mi}" ${asstBusy ? 'disabled' : ''}>تطبيق الكل بالترتيب</button>` : ''}` : ''}</div>`).join('');
-  el.innerHTML = `<header><b>مساعد المعلم</b><span class="hint">خطوة «${STEPS[S.step]}»</span><button class="btn ghost sm" data-act="asstToggle" aria-label="إغلاق">✕</button></header>
-  <div class="amsgs" id="amsgs">${msgs || '<p class="hint">أنا هنا لأساعدك في كل خطوة: أشرح نقاط الاختبار والجدول والتدقيق، وأقترح تعديلات تنفّذها بضغطة منك. لا أنفّذ شيئًا دون موافقتك.</p>'}${asstBusy ? '<div class="am a"><p class="hint">أفكّر…</p></div>' : ''}</div>
-  <div class="achips">${STEP_CHIPS[S.step].map(t => `<button class="chip" data-act="aChip" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>
-  <div class="ain"><textarea id="asst-in" rows="2" placeholder="اكتب سؤالك أو ما تريد تنفيذه…" aria-label="رسالة للمساعد"></textarea><button class="btn" data-act="aSend" ${asstBusy ? 'disabled' : ''}>إرسال</button></div>`;
-  $('asst-in').value = old; const m = $('amsgs'); m.scrollTop = m.scrollHeight;
-}
-async function asstSend(text) {
-  text = (text || '').trim(); if (!text || asstBusy) return;
-  chat.push({ role: 'u', text }); asstBusy = true; renderAsst();
-  try {
-    const d = await ask(buildAsstPrompt(text), { cache: false });
-    chat.push({ role: 'a', text: String(d.reply || 'لم أفهم الطلب، أعد صياغته.'), actions: cleanActs(d.actions), done: [] });
-  } catch (e) { chat.push({ role: 'a', text: errMsg(e), actions: [] }); }
-  asstBusy = false; renderAsst();
-}
-async function asstApply(mi, ai) {
-  const m = chat[mi]; if (!m || !m.actions[ai] || m.done[ai] === 'ok' || asstBusy) return;
-  asstBusy = true; renderAsst();
-  try { await doAction(m.actions[ai]); m.done[ai] = 'ok'; } catch (e) { m.done[ai] = (e && e.code ? errMsg(e) : (e && e.message) || 'تعذر التنفيذ'); }
-  asstBusy = false; renderAsst();
-  return m.done[ai] === 'ok';
-}
-
 /* ---------- events ---------- */
 document.addEventListener('click', async ev => {
   const b = ev.target.closest('[data-act]'); if (!b || b.disabled) return; const a = b.dataset.act, id = b.dataset.id;
@@ -1573,12 +1414,6 @@ document.addEventListener('click', async ev => {
   else if (a === 'standards') { const e = $('standards'); e.hidden = !e.hidden; if (!e.hidden) { e.innerHTML = standardsHTML(); if (e.scrollIntoView) e.scrollIntoView({ block: 'start' }); } }
   else if (a === 'export') exportDoc(b.dataset.k);
   else if (a === 'reset') { if (b.dataset.sure) { try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ } S = freshState(); render(); } else { b.dataset.sure = '1'; b.textContent = 'اضغط مرة أخرى لتأكيد مسح كل البيانات'; } }
-  else if (a === 'asstToggle') { asstOpen = !asstOpen; renderAsst(); if (asstOpen && $('asst-in')) $('asst-in').focus(); }
-  else if (a === 'aSend') { const t = $('asst-in'); const v = t.value; t.value = ''; asstSend(v); }
-  else if (a === 'aChip') { asstSend(b.dataset.t); }
-  else if (a === 'aAct') asstApply(+b.dataset.m, +b.dataset.i);
-  else if (a === 'aAll') { const m = chat[+b.dataset.m]; for (let k = 0; k < m.actions.length; k++) { if (m.done[k] === 'ok') continue; if (!(await asstApply(+b.dataset.m, k))) break; } }
-  else if (a === 'aFix') { asstOpen = true; asstSend('عالج ملاحظات التدقيق: اقترح تعديلات دقيقة على الأسئلة التي بها ملاحظات، واشرح لي سبب كل تعديل.'); }
   else if (a === 'status') { $('status').hidden = !$('status').hidden; }
 });
 function onField(ev) {
@@ -1604,7 +1439,6 @@ function onField(ev) {
     if (t.dataset.file === 'pic') uploadPic(t.dataset.gid, t.dataset.label, files[0]); else if (t.dataset.file === 'logo') uploadLogo(files[0]); else if (t.dataset.file === 'content') addContentFiles(files); else if (t.dataset.file === 'tos') importTOS(files[0]);
   }
 }
-document.addEventListener('keydown', ev => { if (ev.target && ev.target.id === 'asst-in' && ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); const v = ev.target.value; ev.target.value = ''; asstSend(v); } });
 document.addEventListener('input', onField); document.addEventListener('change', onField);
 document.addEventListener('change', ev => { const t = ev.target; if (t.dataset && t.dataset.q && (t.dataset.f === 'unit')) { const q = S.questions.find(x => x.id === t.dataset.q); if (q) { q.unit = t.value; save(); refreshCompl(); } } });
 
@@ -1614,7 +1448,7 @@ function render() {
   const nav = $('stepper'); nav.innerHTML = STEPS.map((t, i) => `<button class="st${i === S.step ? ' on' : ''}${i < S.step ? ' done' : ''}" data-act="step" data-s="${i}" ${i === S.step ? 'aria-current="step"' : ''}><i>${ICON[i] || i + 1}</i><span>${t}</span></button>`).join('');
   $('stage').innerHTML = VIEWS[S.step]();
   $('prev').hidden = S.step === 0; $('next').hidden = S.step === LAST;
-  renderFeat(); renderAsst();
+  renderFeat();
   if (S.step === 2 || S.step === 5) updateTOS();
   if (S.step === 3 && busy) prog('جارٍ التوليد…');
   document.documentElement.dir = 'rtl'; document.documentElement.lang = 'ar';
