@@ -716,7 +716,14 @@
                             <h2 class="text-xl font-bold mb-1">Final Exam Paper & TOS Preview</h2>
                             <p class="text-sm text-[#566b66]">Live preview of the official exam sheet matching the teacher model guide.</p>
                         </div>
-                        <button onclick="app.exportWord()" class="px-6 py-2.5 bg-[#0b6b60] text-white font-semibold rounded-xl text-sm shadow-sm hover:bg-[#09574e]">Download & Export Word (.docx)</button>
+                        <div class="flex items-center gap-3">
+                            <label class="cursor-pointer px-4 py-2.5 bg-[#dcefea] text-[#0b6b60] font-semibold rounded-xl text-sm hover:bg-[#cbe6e0] tab-transition flex items-center gap-2 shadow-xs">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                <span>Add School Logo</span>
+                                <input type="file" accept="image/*" onchange="app.uploadSchoolLogo(event)" class="hidden">
+                            </label>
+                            <button onclick="app.exportWord()" class="px-6 py-2.5 bg-[#0b6b60] text-white font-semibold rounded-xl text-sm shadow-sm hover:bg-[#09574e]">Download & Export Word (.docx)</button>
+                        </div>
                     </div>
 
                     <!-- Paper Preview Box -->
